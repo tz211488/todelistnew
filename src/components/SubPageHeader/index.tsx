@@ -1,20 +1,30 @@
 import React from 'react';
 import { MenuFoldOutlined } from '@ant-design/icons';
+import { connect, Dispatch } from 'umi';
 
 import styles from './index.less';
 
 export interface SubPageHeaderProps {
   right?: React.ReactNode;
+  dispatch: Dispatch;
 }
 const collapseBtn = React.createRef();
 
 export { collapseBtn };
 const SubPageHeader: React.FC<SubPageHeaderProps> = (props) => {
+  const { dispatch } = props;
+  const toggleCollapsed = (): void => {
+    if (dispatch) {
+      dispatch({
+        type: 'global/toggleCollapsed',
+      });
+    }
+  };
   return (
     <div className={styles.container}>
       <div className={styles.left}>
         <span>
-          <MenuFoldOutlined />
+          <MenuFoldOutlined onClick={toggleCollapsed} />
         </span>
         <span className={styles.title}>今天</span>
       </div>
@@ -23,4 +33,4 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = (props) => {
   );
 };
 
-export default SubPageHeader;
+export default connect(() => ({}))(SubPageHeader);
