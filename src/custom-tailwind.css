@@ -1,0 +1,6 @@
+/* stylelint-disable */
+
+.f-align-center{
+    @apply flex items-center;
+}
+

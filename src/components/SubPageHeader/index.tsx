@@ -1,18 +1,18 @@
 import React from 'react';
-import { MenuFoldOutlined } from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
+import { ConnectState } from '@/models/connect';
 
 import styles from './index.less';
 
 export interface SubPageHeaderProps {
   right?: React.ReactNode;
   dispatch: Dispatch;
+  collapsed: boolean;
 }
-const collapseBtn = React.createRef();
 
-export { collapseBtn };
 const SubPageHeader: React.FC<SubPageHeaderProps> = (props) => {
-  const { dispatch } = props;
+  const { dispatch, collapsed } = props;
   const toggleCollapsed = (): void => {
     if (dispatch) {
       dispatch({
@@ -20,11 +20,22 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = (props) => {
       });
     }
   };
+  const CollapsedBtn = () => {
+    if (collapsed) {
+      return <MenuUnfoldOutlined />;
+    }
+
+    return <MenuFoldOutlined />;
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.left}>
-        <span>
-          <MenuFoldOutlined onClick={toggleCollapsed} />
+    <div className="flex justify-between h-16 bg-white">
+      <div className="flex items-center space-x-4 px-4">
+        <span
+          className="text-gray-600 hover:text-gray-800 text-xl leading-none cursor-pointer"
+          onClick={toggleCollapsed}
+        >
+          <CollapsedBtn />
         </span>
         <span className={styles.title}>今天</span>
       </div>
@@ -33,4 +44,6 @@ const SubPageHeader: React.FC<SubPageHeaderProps> = (props) => {
   );
 };
 
-export default connect(() => ({}))(SubPageHeader);
+export default connect(({ global }: ConnectState) => ({
+  collapsed: global.collapsed,
+}))(SubPageHeader);

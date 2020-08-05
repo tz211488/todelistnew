@@ -43,7 +43,7 @@ export default defineConfig({
       routes: [
         {
           path: '/',
-          component: '../layouts/BasicLayout',
+          component: '../layouts/TodoListBasicList',
           authority: ['admin', 'user'],
           routes: [
             {
@@ -90,6 +90,18 @@ export default defineConfig({
           ],
         },
         {
+          path: '/',
+          component: '../layouts/BasicLayout',
+          authority: ['admin', 'user'],
+          routes: [
+            {
+              path: '/',
+              redirect: '/welcome',
+            },
+          ],
+        },
+
+        {
           component: './404',
         },
       ],
@@ -110,4 +122,10 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  extraPostCSSPlugins: [
+    require('postcss-import'),
+    require('tailwindcss'),
+    require('postcss-nested'), // or require('postcss-nesting')
+    require('autoprefixer'),
+  ],
 });

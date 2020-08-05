@@ -1,4 +1,5 @@
 export default {
+  'menu.todolist.today': 'Today',
   'menu.welcome': 'Welcome',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',
