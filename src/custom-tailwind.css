@@ -4,3 +4,7 @@
     @apply flex items-center;
 }
 
+.cursor-w-resize{
+    cursor: w-resize;
+}
+

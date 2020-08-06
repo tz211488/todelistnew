@@ -9,7 +9,7 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useIntl, connect, Dispatch, history } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
@@ -101,6 +101,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
    * constructor
    */
 
+  const [isLayoutMove, setLayoutMove] = useState(false);
+
   useEffect(() => {
     if (dispatch) {
       dispatch({
@@ -120,6 +122,21 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       });
     }
   }; // get children authority
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setLayoutMove(true);
+    console.log('down', event);
+  };
+  const handleMouseUp = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setLayoutMove(false);
+    console.log(event);
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (isLayoutMove) {
+      console.log('move', { x: event.clientX, y: event.clientY });
+    }
+  };
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -162,6 +179,15 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
         <div className="flex bg-white h-full">
           <div className="w-1/2">{children}</div>
+
+          <div className=" border-left h-full relative">
+            <div
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              className="absolute cursor-w-resize top-0 h-full w-4"
+            />
+          </div>
 
           <div className="flex-auto">
             <SubPageRight />
