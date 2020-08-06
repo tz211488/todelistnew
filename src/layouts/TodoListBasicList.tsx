@@ -9,7 +9,7 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import { Link, useIntl, connect, Dispatch, history } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
@@ -122,19 +122,29 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       });
     }
   }; // get children authority
-
+  let originPosition: number = 0;
+  const [widthStyle, setWidthStyle] = useState({});
+  const myRef = createRef<HTMLDivElement>();
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setLayoutMove(true);
-    console.log('down', event);
+    originPosition = event.clientX;
   };
   const handleMouseUp = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setLayoutMove(false);
+    originPosition = 0;
     console.log(event);
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isLayoutMove) {
-      console.log('move', { x: event.clientX, y: event.clientY });
+      if (Math.abs(event.clientX - originPosition) > 2) {
+        if (!myRef.current) {
+          const width = myRef.current.clientWidth || 0;
+          setWidthStyle({
+            height: `${width + event.clientX - originPosition} px`,
+          });
+        }
+      }
     }
   };
 
@@ -178,13 +188,16 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     >
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
         <div className="flex bg-white h-full">
-          <div className="w-1/2">{children}</div>
+          <div className="w-1/2" ref={myRef} style={widthStyle}>
+            {children}
+          </div>
 
           <div className=" border-left h-full relative">
             <div
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
               className="absolute cursor-w-resize top-0 h-full w-4"
             />
           </div>
