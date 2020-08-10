@@ -9,7 +9,7 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import React, { useEffect, useState, createRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useIntl, connect, Dispatch, history } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
@@ -124,7 +124,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   }; // get children authority
   let originPosition: number = 0;
   const [widthStyle, setWidthStyle] = useState({});
-  const myRef = createRef<HTMLDivElement>();
+  const myRef = useRef(null);
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setLayoutMove(true);
     originPosition = event.clientX;
@@ -137,13 +137,24 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isLayoutMove) {
-      if (Math.abs(event.clientX - originPosition) > 2) {
-        if (!myRef.current) {
-          const width = myRef.current.clientWidth || 0;
-          setWidthStyle({
-            height: `${width + event.clientX - originPosition} px`,
-          });
+      if (Math.abs(event.clientX - originPosition) >= 1) {
+        if (originPosition === 0) {
+          originPosition = event.clientX;
+          return;
         }
+
+        const width = (myRef as any).current.clientWidth || 0;
+        const currentPosition = width + (event.clientX - originPosition) * 1.6;
+
+        setWidthStyle({
+          width: `${currentPosition}px`,
+        });
+        console.log('originPosition', originPosition);
+        console.log('currentPosition', event.clientX);
+        console.log('currentwidth', width);
+        console.log('changeToWidth', `${currentPosition}px`);
+
+        originPosition = event.clientX;
       }
     }
   };
@@ -187,7 +198,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       {...settings}
     >
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
-        <div className="flex bg-white h-full">
+        <div
+          className="flex bg-white h-full"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+        >
           <div className="w-1/2" ref={myRef} style={widthStyle}>
             {children}
           </div>
@@ -195,9 +210,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           <div className=" border-left h-full relative">
             <div
               onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
               className="absolute cursor-w-resize top-0 h-full w-4"
             />
           </div>
