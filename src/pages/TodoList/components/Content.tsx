@@ -10,11 +10,7 @@ const { Option } = Select;
 export interface SubPageContentProps {
   right?: React.ReactNode;
   dispatch: Dispatch;
-  collapsed: boolean;
-  taskList: Array<any>;
-  taskListInfo: {
-    [key: string]: any;
-  };
+  tasks: any;
 }
 
 const initTaskState = {
@@ -34,30 +30,31 @@ const initTaskState = {
 };
 
 const Content: React.FC<SubPageContentProps> = (props) => {
-  const { dispatch, collapsed, taskList, taskListInfo } = props;
+  const { dispatch, tasks } = props;
+  const { allIds: taskList, byId: taskListInfo } = tasks;
   // const data = ['dsadfadsf', 'sdfasdfasdf', 'sdfasdfasdf'];
   const [inputValue, setInputVqlue] = useState('');
-
-  console.log(dispatch);
-  console.log(collapsed);
 
   const addTask = (e: any) => {
     if (!e.target.value) return;
 
-    console.log(e.target.value);
-
     dispatch({
-      type: 'task/addTask',
+      type: 'tasks/addTask',
       payload: {
         ...initTaskState,
         ...{
           title: e.target.value,
+          uid: Date.now().toString(),
         },
       },
     });
 
     setInputVqlue('');
   };
+
+  console.log('重新运行1', props);
+  console.log('重新运行4', taskList);
+  console.log('重新运行3', taskListInfo);
 
   return (
     <div className="px-4 space-y-4">
@@ -83,9 +80,9 @@ const Content: React.FC<SubPageContentProps> = (props) => {
           footer={<div>Footer</div>}
           bordered
           dataSource={taskList}
-          renderItem={(item) => (
+          renderItem={(item: string) => (
             <List.Item>
-              <ListItem title={taskListInfo[item].title} />
+              <ListItem dataSource={taskListInfo[item]} />
             </List.Item>
           )}
         />
@@ -94,8 +91,6 @@ const Content: React.FC<SubPageContentProps> = (props) => {
   );
 };
 
-export default connect(({ global, tasks }: any) => ({
-  collapsed: global.collapsed,
-  taskListInfo: tasks.tasks.byId,
-  taskLisk: tasks.tasks.allIds,
+export default connect(({ tasks }: any) => ({
+  tasks: tasks.tasks,
 }))(Content);

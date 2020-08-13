@@ -4,7 +4,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
 
 interface ListItemProps {
-  title: string;
+  dataSource: any;
   level?: number;
   dispatch: Dispatch;
 }
@@ -16,7 +16,8 @@ enum WidthStyle {
 }
 
 const ListItem: React.FC<ListItemProps> = (props) => {
-  const { title, level = 0, dispatch } = props;
+  const { dispatch, dataSource } = props;
+  const { uid, level = 0, title } = dataSource;
 
   const width = WidthStyle[level];
 
@@ -28,11 +29,19 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     if (!e.target.value) return;
 
     dispatch({
-      type: 'task/updateTask',
+      type: 'tasks/updateTask',
       payload: {
-        index: 1,
-        attr: 'title',
-        value: e.target.value,
+        uid,
+        title: e.target.value,
+      },
+    });
+  };
+
+  const handleDelete = () => {
+    dispatch({
+      type: 'tasks/deleteTask',
+      payload: {
+        uid,
       },
     });
   };
@@ -59,7 +68,9 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             <span>
               <Tag>dsdsds</Tag>
             </span>
-            <span>删除</span>
+            <span className="cursor-pointer" onClick={handleDelete}>
+              删除
+            </span>
           </div>
         </div>
         <div className="pl-16">dfgsdfgsdfgsdfg</div>
