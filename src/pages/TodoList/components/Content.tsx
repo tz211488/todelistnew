@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input, Select, List } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
-import { ConnectState } from '@/models/connect';
+
 import ListItem from '@/components/ListItem';
 
 const { Option } = Select;
@@ -12,10 +12,29 @@ export interface SubPageContentProps {
   dispatch: Dispatch;
   collapsed: boolean;
   taskList: Array<any>;
+  taskListInfo: {
+    [key: string]: any;
+  };
 }
 
+const initTaskState = {
+  uid: '',
+  title: '',
+  description: '',
+  child: [],
+  parent: '',
+  status: 0,
+  progress: 0,
+  tags: [],
+  categorys: '',
+  startTime: '',
+  endTime: '',
+  alertTime: '',
+  alertType: '',
+};
+
 const Content: React.FC<SubPageContentProps> = (props) => {
-  const { dispatch, collapsed, taskList } = props;
+  const { dispatch, collapsed, taskList, taskListInfo } = props;
   // const data = ['dsadfadsf', 'sdfasdfasdf', 'sdfasdfasdf'];
   const [inputValue, setInputVqlue] = useState('');
 
@@ -26,13 +45,15 @@ const Content: React.FC<SubPageContentProps> = (props) => {
     if (!e.target.value) return;
 
     console.log(e.target.value);
-    const payload = {
-      title: e.target.value,
-    };
 
     dispatch({
       type: 'task/addTask',
-      payload,
+      payload: {
+        ...initTaskState,
+        ...{
+          title: e.target.value,
+        },
+      },
     });
 
     setInputVqlue('');
@@ -64,7 +85,7 @@ const Content: React.FC<SubPageContentProps> = (props) => {
           dataSource={taskList}
           renderItem={(item) => (
             <List.Item>
-              <ListItem title={item.title} />
+              <ListItem title={taskListInfo[item].title} />
             </List.Item>
           )}
         />
@@ -73,6 +94,8 @@ const Content: React.FC<SubPageContentProps> = (props) => {
   );
 };
 
-export default connect(({ global }: ConnectState) => ({
+export default connect(({ global, tasks }: any) => ({
   collapsed: global.collapsed,
+  taskListInfo: tasks.tasks.byId,
+  taskLisk: tasks.tasks.allIds,
 }))(Content);

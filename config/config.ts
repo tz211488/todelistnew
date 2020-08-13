@@ -82,12 +82,7 @@ export default defineConfig({
               path: '/today',
               component: './TodoList',
             },
-            {
-              name: 'dashboard',
-              icon: 'smile',
-              path: '/dashboardanalysis',
-              component: './DashboardAnalysis',
-            },
+
             {
               component: './404',
             },
