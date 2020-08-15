@@ -2,6 +2,7 @@ import React from 'react';
 import { Checkbox, Tag } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
+import { taskMenu } from '@/components/ModalMenu/TaskMenu';
 
 interface ListItemProps {
   dataSource: any;
@@ -46,8 +47,15 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     });
   };
 
+  const handleRightClick = (e: any) => {
+    const { clientX, clientY } = e;
+    console.log('right click - ---------', { clientX, clientY });
+    e.preventDefault();
+    taskMenu.show(<div className="bg-red-600 w-64 h-64">fasdfasdf</div>, { clientX, clientY });
+  };
+
   return (
-    <div className="w-full flex justify-end">
+    <div className="w-full flex justify-end" onContextMenu={handleRightClick}>
       <div
         className={`${width} w-3/4`}
         draggable="true"

@@ -1,4 +1,5 @@
-import { Effect, Reducer } from 'umi';
+import { Effect, Reducer, Subscription } from 'umi';
+import { taskMenu } from '@/components/ModalMenu/TaskMenu';
 
 export interface TaskStateType {
   tasks: TaskListModel;
@@ -66,6 +67,7 @@ export interface TaskModelType {
 
     // editTask: Reducer<TaskStateType>;
   };
+  subscriptions: { onClick: Subscription };
 }
 
 const normalize = (taskList: any) => {
@@ -264,6 +266,13 @@ const TaskModel: TaskModelType = {
         ...(state as TaskStateType),
         category: { byId, allIds: state?.category.allIds as string[] },
       };
+    },
+  },
+  subscriptions: {
+    onClick(): void {
+      document.addEventListener('click', () => {
+        taskMenu.close();
+      });
     },
   },
 };

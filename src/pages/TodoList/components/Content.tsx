@@ -52,10 +52,6 @@ const Content: React.FC<SubPageContentProps> = (props) => {
     setInputVqlue('');
   };
 
-  console.log('重新运行1', props);
-  console.log('重新运行4', taskList);
-  console.log('重新运行3', taskListInfo);
-
   return (
     <div className="px-4 space-y-4">
       <div>
