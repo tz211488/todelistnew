@@ -8,3 +8,9 @@
     cursor: w-resize;
 }
 
+.task-item-drag-icon{
+    left: -1.8rem;
+    width: 1.5rem;
+    height: 1rem;
+}
+

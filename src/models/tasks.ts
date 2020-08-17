@@ -65,6 +65,8 @@ export interface TaskModelType {
     deleteCategory: Reducer<TaskStateType>;
     updateCategory: Reducer<TaskStateType>;
 
+    changeCategoryListOrder: Reducer<TaskStateType>;
+
     // editTask: Reducer<TaskStateType>;
   };
   subscriptions: { onClick: Subscription };
@@ -259,6 +261,16 @@ const TaskModel: TaskModelType = {
     },
 
     updateCategory(state, { payload }) {
+      const byId = { ...(state?.category.byId as object) };
+      byId[payload.uid] = { ...byId[payload.uid], ...payload };
+
+      return {
+        ...(state as TaskStateType),
+        category: { byId, allIds: state?.category.allIds as string[] },
+      };
+    },
+
+    changeCategoryListOrder(state, { payload }) {
       const byId = { ...(state?.category.byId as object) };
       byId[payload.uid] = { ...byId[payload.uid], ...payload };
 
