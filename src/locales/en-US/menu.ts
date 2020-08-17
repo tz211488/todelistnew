@@ -1,5 +1,7 @@
 export default {
   'menu.todolist.today': 'Today',
+  'menu.todolist.week': 'Week',
+  'menu.todolist.collection': 'Collection',
   'menu.welcome': 'Welcome',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',

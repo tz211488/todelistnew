@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Checkbox, Tag } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import { RightOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { connect, Dispatch } from 'umi';
 import { taskMenu } from '@/components/ModalMenu/TaskMenu';
 
@@ -20,11 +20,21 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   const { dispatch, dataSource } = props;
   const { uid, level = 0, title } = dataSource;
 
+  const [isShowDragIcon, setShowDragIcon] = useState(false);
+  // const [isItemDragable, setItemDragable] = useState(false)
+
   const width = WidthStyle[level];
 
-  const handleDragLeave = () => console.log('d');
-  const handleDrop = () => console.log('d');
-  const handleDragEnter = () => console.log('d');
+  const handleDragLeave = () => console.log('leave');
+  const handleDrop = () => console.log('drop');
+  const handleDragEnter = () => console.log('enter');
+  const handleDrag = () => console.log('drag');
+  const handleDragEnd = () => {
+    setShowDragIcon(false);
+    console.log('end');
+  };
+  const handleDragStart = () => console.log('start');
+  const handleDragOver = () => console.log('over', title);
 
   const handleTitleChange = (e: any) => {
     if (!e.target.value) return;
@@ -54,40 +64,56 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     taskMenu.show(<div className="bg-red-600 w-64 h-64">fasdfasdf</div>, { clientX, clientY });
   };
 
-  const handleClick = (e: any) => {
-    if (e.shiftKey) {
-      console.log('hhahahha', 'shift');
-    }
-  };
+  // const handleClick = (e: any) => {
+  //   if (e.shiftKey) {
+  //     console.log('hhahahha', 'shift');
+  //   }
+  // };
 
   return (
-    <div className="w-full flex justify-end" onContextMenu={handleRightClick} onClick={handleClick}>
-      <div
-        className={`${width} w-3/4`}
-        draggable="true"
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragEnter}
-        onDrop={handleDrop}
-      >
-        <div className="f-align-center justify-between space-x-4">
-          <div className="f-align-center space-x-2">
-            <Checkbox className="leading-none" />
-            <RightOutlined />
+    <div>
+      <div className="w-full flex justify-end" onContextMenu={handleRightClick}>
+        <div
+          className={`${width} w-3/4`}
+          draggable={isShowDragIcon}
+          onDragEnter={handleDragEnter}
+          onDragStart={handleDragStart}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+          onDrop={handleDrop}
+          onDrag={handleDrag}
+        >
+          <div className="f-align-center justify-between space-x-4">
+            <div className="f-align-center space-x-2 relative">
+              <Checkbox className="leading-none" />
+              <RightOutlined />
+
+              <div
+                className="absolute bg-red-600 task-item-drag-icon leading-none cursor-pointer"
+                onFocus={() => console.log('ad')}
+                onMouseLeave={() => setShowDragIcon(false)}
+                onMouseOver={() => setShowDragIcon(true)}
+              >
+                {isShowDragIcon ? (
+                  <UnorderedListOutlined className="leading-none text-base" />
+                ) : null}
+              </div>
+            </div>
+            <div className="flex-auto">
+              <input onChange={handleTitleChange} value={title} />
+            </div>
+            <div>
+              <span>
+                <Tag>dsdsds</Tag>
+              </span>
+              <span className="cursor-pointer" onClick={handleDelete}>
+                删除
+              </span>
+            </div>
           </div>
-          <div className="flex-auto">
-            <input onChange={handleTitleChange} value={title} />
-          </div>
-          <div>
-            <span>
-              <Tag>dsdsds</Tag>
-            </span>
-            <span className="cursor-pointer" onClick={handleDelete}>
-              删除
-            </span>
-          </div>
+          <div className="pl-16">dfgsdfgsdfgsdfg</div>
         </div>
-        <div className="pl-16">dfgsdfgsdfgsdfg</div>
       </div>
     </div>
   );
