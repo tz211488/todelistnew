@@ -14,7 +14,7 @@ export interface TagType {
 export interface CategoryItemType {
   uid: string;
   label: string;
-  taskList: string[];
+  taskList: any[];
 }
 
 export interface CategoryListType {
@@ -96,8 +96,14 @@ const initState: TaskStateType = {
     allIds: [],
   },
   category: {
-    byId: {},
-    allIds: [],
+    byId: {
+      adb: {
+        uid: 'adb',
+        label: 'asdfasdf',
+        taskList: [{ uid: 'abc', isSelected: false }],
+      },
+    },
+    allIds: ['abc'],
   },
 };
 

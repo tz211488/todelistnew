@@ -54,8 +54,14 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     taskMenu.show(<div className="bg-red-600 w-64 h-64">fasdfasdf</div>, { clientX, clientY });
   };
 
+  const handleClick = (e: any) => {
+    if (e.shiftKey) {
+      console.log('hhahahha', 'shift');
+    }
+  };
+
   return (
-    <div className="w-full flex justify-end" onContextMenu={handleRightClick}>
+    <div className="w-full flex justify-end" onContextMenu={handleRightClick} onClick={handleClick}>
       <div
         className={`${width} w-3/4`}
         draggable="true"
