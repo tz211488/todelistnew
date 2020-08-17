@@ -24,6 +24,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   // const [isItemDragable, setItemDragable] = useState(false)
 
   const width = WidthStyle[level];
+  const widthSub = WidthStyle[level + 1];
 
   const handleDragLeave = () => console.log('leave');
   const handleDrop = () => console.log('drop');
@@ -71,7 +72,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   // };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="w-full flex justify-end" onContextMenu={handleRightClick}>
         <div
           className={`${width} w-3/4`}
@@ -113,6 +114,11 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             </div>
           </div>
           <div className="pl-16">dfgsdfgsdfgsdfg</div>
+        </div>
+      </div>
+      <div className="flex justify-end">
+        <div className={`${width} h-12 bg-red-600 flex justify-end`}>
+          <div className={`${widthSub} w-3/4 h-12 bg-blue-600`} />
         </div>
       </div>
     </div>
