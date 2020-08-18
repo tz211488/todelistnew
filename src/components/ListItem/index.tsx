@@ -20,22 +20,80 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   const { dispatch, dataSource } = props;
   const { uid, level = 0, title } = dataSource;
 
+  let timerFlag: any = null;
+
   const [isShowDragIcon, setShowDragIcon] = useState(false);
   // const [isItemDragable, setItemDragable] = useState(false)
+
+  // const [isShowAddElement, setShowAddElement] = useState(true);
+  const [isShowMainElement, setShowMainElement] = useState(false);
+  const [isShowSubElement, setShowSubElement] = useState(false);
 
   const width = WidthStyle[level];
   const widthSub = WidthStyle[level + 1];
 
-  const handleDragLeave = () => console.log('leave');
+  const handleDragLeave = () => {
+    console.log('leave', title);
+    timerFlag = setTimeout(() => {
+      setShowMainElement(false);
+    }, 100);
+  };
   const handleDrop = () => console.log('drop');
-  const handleDragEnter = () => console.log('enter');
-  const handleDrag = () => console.log('drag');
+  const handleDragEnter = () => {
+    console.log('enter');
+    setShowMainElement(true);
+    setShowSubElement(false);
+  };
+  const handleDrag = () => console.log('drag - - UP', title);
   const handleDragEnd = () => {
-    setShowDragIcon(false);
-    console.log('end');
+    // setShowDragIcon(false);
+    console.log('end', title);
   };
   const handleDragStart = () => console.log('start');
-  const handleDragOver = () => console.log('over', title);
+  const handleDragOver = () => {
+    console.log('over', title);
+    // setShowAddElement(true)
+    clearTimeout(timerFlag);
+    setShowMainElement(true);
+    setShowSubElement(false);
+  };
+
+  const handleDragEnterAddMain = () => {
+    console.log('Enter', 'AddMain');
+    clearTimeout(timerFlag);
+    setShowMainElement(true);
+  };
+  const handleDragOverAddMain = (e: any) => {
+    console.log('Over', 'AddMain');
+    e.stopPropagation();
+    e.preventDefault();
+    clearTimeout(timerFlag);
+    setShowMainElement(true);
+  };
+
+  const handleDragOverAddSub = (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    console.log('Over', 'AddSub');
+    clearTimeout(timerFlag);
+    setShowSubElement(true);
+  };
+
+  const handleDragDropAddMain = (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setShowMainElement(false);
+
+    console.log('add main item');
+  };
+
+  const handleDragDropAddSub = (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setShowMainElement(false);
+
+    console.log('add sub item');
+  };
 
   const handleTitleChange = (e: any) => {
     if (!e.target.value) return;
@@ -72,19 +130,19 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   // };
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      draggable={isShowDragIcon}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDrop={handleDrop}
+      onDrag={handleDrag}
+    >
       <div className="w-full flex justify-end" onContextMenu={handleRightClick}>
-        <div
-          className={`${width} w-3/4`}
-          draggable={isShowDragIcon}
-          onDragEnter={handleDragEnter}
-          onDragStart={handleDragStart}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-          onDrop={handleDrop}
-          onDrag={handleDrag}
-        >
+        <div className={`${width} w-3/4`}>
           <div className="f-align-center justify-between space-x-4">
             <div className="f-align-center space-x-2 relative">
               <Checkbox className="leading-none" />
@@ -116,10 +174,22 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           <div className="pl-16">dfgsdfgsdfgsdfg</div>
         </div>
       </div>
+
       <div className="flex justify-end">
-        <div className={`${width} h-12 bg-red-600 flex justify-end`}>
-          <div className={`${widthSub} w-3/4 h-12 bg-blue-600`} />
-        </div>
+        {isShowMainElement ? (
+          <div
+            onDragEnter={handleDragEnterAddMain}
+            onDrop={handleDragDropAddMain}
+            onDragOver={handleDragOverAddMain}
+            className={`${width} h-12 ${isShowSubElement ? '' : 'bg-gray-600'} flex justify-end`}
+          >
+            <div
+              onDragOver={handleDragOverAddSub}
+              onDrop={handleDragDropAddSub}
+              className={`${widthSub} w-3/4 h-12 ${isShowSubElement ? 'bg-gray-600' : ''}`}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );
